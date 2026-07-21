@@ -163,13 +163,4 @@ By default, `notification-service` **simulates** emails (logs them + saves to DB
 | PUT | `/api/shelters/{id}/assign` | Assign rescued people to a shelter |
 | POST | `/api/notifications/send` | Send a notification (used internally by Feign) |
 
-## Notes & Known Simplifications (by design, for a fresher-scope project)
 
-- Passwords are stored in plain text for simplicity — a production system would use Spring Security + BCrypt + JWT (see this candidate's other project, VSMS, for a JWT-secured example).
-- No API Gateway-level authentication filter — every service trusts the gateway. Adding a JWT filter at the gateway is a natural "next step" talking point in interviews.
-- Email sending defaults to simulation mode to keep the project runnable without SMTP credentials.
-
-## Resume Bullet
-
-> **Enterprise Smart Disaster Response Platform | Spring Boot Microservices**
-> Developed a microservices-based disaster response platform using Spring Boot, Spring Cloud Gateway, Eureka, and OpenFeign to manage rescue requests, volunteer assignments, shelter allocation, and email notifications through REST APIs.
