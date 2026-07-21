@@ -1,0 +1,10 @@
+target/
+*.class
+.idea/
+*.iml
+.vscode/
+node_modules/
+dist/
+.env
+*.log
+HELP.md

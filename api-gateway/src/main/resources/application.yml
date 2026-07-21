@@ -1,0 +1,47 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: false
+      routes:
+        - id: user-service
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/api/users/**
+
+        - id: rescue-request-service
+          uri: lb://RESCUE-REQUEST-SERVICE
+          predicates:
+            - Path=/api/rescue-requests/**
+
+        - id: volunteer-service
+          uri: lb://VOLUNTEER-SERVICE
+          predicates:
+            - Path=/api/volunteers/**
+
+        - id: shelter-service
+          uri: lb://SHELTER-SERVICE
+          predicates:
+            - Path=/api/shelters/**
+
+        - id: notification-service
+          uri: lb://NOTIFICATION-SERVICE
+          predicates:
+            - Path=/api/notifications/**
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    prefer-ip-address: true
+
+logging:
+  level:
+    org.springframework.cloud.gateway: INFO

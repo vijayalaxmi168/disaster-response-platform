@@ -1,0 +1,55 @@
+server:
+  port: 8085
+
+spring:
+  application:
+    name: notification-service
+  datasource:
+    url: jdbc:postgresql://localhost:5432/notification_db
+    username: postgres
+    password: Vijayalakshmi
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    prefer-ip-address: true
+
+# ---------------------------------------------------------------------------
+# Email is SIMULATED by default (logged + saved to DB) so the project runs
+# out-of-the-box without needing real SMTP credentials.
+# To send REAL emails: set notification.email.mode to "real" below and fill
+# in your SMTP details (e.g. Gmail App Password), then set spring.mail.*.
+# ---------------------------------------------------------------------------
+notification:
+  email:
+    mode: simulate   # simulate | real
+
+spring.mail:
+  host: smtp.gmail.com
+  port: 587
+  username: your-email@gmail.com
+  password: your-app-password
+  properties:
+    mail:
+      smtp:
+        auth: true
+        starttls:
+          enable: true
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+
+logging:
+  level:
+    com.disaster.notification: DEBUG
