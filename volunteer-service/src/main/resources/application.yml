@@ -7,7 +7,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/volunteer_db
     username: postgres
-    password: Vijayalakshmi
+    password: 
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
