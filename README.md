@@ -19,7 +19,6 @@ A microservices-based disaster response platform built with **Spring Boot**, **S
 
 disaster-response-platform/
 ├── pom.xml ← parent Maven POM (aggregator)
-├── docker/init-db.sql
 ├── eureka-server/ (port 8761)
 ├── api-gateway/ (port 8080)
 ├── user-service/ (port 8081)
@@ -59,12 +58,7 @@ cd eureka-server && mvn spring-boot:run
 # 2. API Gateway
 cd api-gateway && mvn spring-boot:run
 
-# 3. The 5 business services (any order, but give Eureka ~10s first)
-cd user-service && mvn spring-boot:run
-cd rescue-request-service && mvn spring-boot:run
-cd volunteer-service && mvn spring-boot:run
-cd shelter-service && mvn spring-boot:run
-cd notification-service && mvn spring-boot:run
+
 ```
 
 Confirm everything registered correctly at the Eureka dashboard: **http://localhost:8761**
