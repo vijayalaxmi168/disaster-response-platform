@@ -2,42 +2,6 @@
 
 A microservices-based disaster response platform built with **Spring Boot**, **Spring Cloud Gateway**, **Eureka**, **OpenFeign**, and a **React** frontend. Citizens raise rescue requests, volunteers get assigned to them, rescued people get placed into shelters, and everyone gets notified by email at each step.
 
-## Architecture
-
-```
-                        ┌─────────────────┐
-                        │  React Frontend │  (Vite, port 5173)
-                        └────────┬────────┘
-                                 │ HTTP
-                                 ▼
-                        ┌─────────────────┐
-                        │   API Gateway   │  (Spring Cloud Gateway, port 8080)
-                        └────────┬────────┘
-                                 │
-                 ┌───────────────┼──────────────────────────┐
-                 │               │                          │
-        ┌────────▼──────┐ ┌──────▼───────┐ ┌────────▼────────┐
-        │ User Service   │ │ Rescue       │ │ Volunteer       │
-        │ (8081)         │ │ Request      │ │ Service (8083)  │
-        │                │ │ Service(8082)│ │                 │
-        └────────────────┘ └──────┬───────┘ └────────┬────────┘
-                                   │  Feign             │  Feign
-                                   ▼                    ▼
-                          ┌──────────────────────────────────┐
-                          │      Notification Service (8085)   │
-                          └──────────────────────────────────┘
-                 ┌────────────────┐
-                 │ Shelter Service│ (8084)
-                 └────────────────┘
-
-        All services register with:  Eureka Server (8761)
-```
-
-**Cross-service (OpenFeign) calls:**
-- `volunteer-service` → `rescue-request-service` (to link a volunteer to a request and flip status to `ASSIGNED`)
-- `volunteer-service` → `notification-service` (email the volunteer "you've been assigned")
-- `rescue-request-service` → `notification-service` (email the citizen on every status change)
-
 ## Tech Stack
 
 | Layer | Technology |
@@ -53,47 +17,38 @@ A microservices-based disaster response platform built with **Spring Boot**, **S
 
 ## Project Structure
 
-```
 disaster-response-platform/
-├── pom.xml                     ← parent Maven POM (aggregator)
-├── docker-compose.yml          ← spins up PostgreSQL with all 5 databases
+├── pom.xml ← parent Maven POM (aggregator)
 ├── docker/init-db.sql
-├── eureka-server/               (port 8761)
-├── api-gateway/                 (port 8080)
-├── user-service/                (port 8081)
-├── rescue-request-service/      (port 8082)
-├── volunteer-service/           (port 8083)
-├── shelter-service/             (port 8084)
-├── notification-service/        (port 8085)
-└── frontend/                    (Vite React app, port 5173)
-```
+├── eureka-server/ (port 8761)
+├── api-gateway/ (port 8080)
+├── user-service/ (port 8081)
+├── rescue-request-service/ (port 8082)
+├── volunteer-service/ (port 8083)
+├── shelter-service/ (port 8084)
+├── notification-service/ (port 8085)
+└── frontend/ (Vite React app, port 5173)
+
 
 ## Prerequisites
 
 - Java 17+ (JDK)
 - Maven 3.8+
 - Node.js 18+ and npm
-- Docker (recommended, for PostgreSQL) — or a local PostgreSQL 14+ install
+- PostgreSQL 14+ installed locally
 
-## 1. Start PostgreSQL
+## 1. Set Up PostgreSQL
 
-**Option A — Docker (recommended):**
-```bash
-docker-compose up -d
-```
-This creates `user_db`, `rescue_db`, `volunteer_db`, `shelter_db`, and `notification_db` automatically (user: `postgres`, password: `postgres`, port `5432`).
+Create the 5 databases (`user_db`, `rescue_db`, `volunteer_db`, `shelter_db`, `notification_db`) using `docker/init-db.sql` as a reference, and update the `spring.datasource.username` / `password` in each service's `application.yml` if your credentials differ.
 
-**Option B — Local PostgreSQL install:**
-Create the 5 databases yourself using `docker/init-db.sql` as a reference, and update the `spring.datasource.username` / `password` in each service's `application.yml` if your credentials differ.
-
-## 2. Build everything
+## 2. Build Everything
 
 From the project root:
 ```bash
 mvn clean install
 ```
 
-## 3. Run the services (in this order)
+## 3. Run the Services (in this order)
 
 Open a separate terminal per service:
 
@@ -113,9 +68,9 @@ cd notification-service && mvn spring-boot:run
 ```
 
 Confirm everything registered correctly at the Eureka dashboard: **http://localhost:8761**
-You should see all 7 apps (API-GATEWAY + 5 services... eureka-server itself doesn't register).
+You should see all 6 apps (API-GATEWAY + 5 services... eureka-server itself doesn't register).
 
-## 4. Run the frontend
+## 4. Run the Frontend
 
 ```bash
 cd frontend
@@ -124,7 +79,7 @@ npm run dev
 ```
 Open **http://localhost:5173**
 
-## Using the app
+## Using the App
 
 1. Register a **Citizen** account → log in → submit a rescue request.
 2. Register a **Volunteer** account → log in → create your volunteer profile → accept a pending request.
@@ -140,13 +95,13 @@ Each business service exposes Swagger UI directly (bypassing the gateway is fine
 - Shelter Service: http://localhost:8084/swagger-ui.html
 - Notification Service: http://localhost:8085/swagger-ui.html
 
-## Sending real emails (optional)
+## Sending Real Emails (optional)
 
 By default, `notification-service` **simulates** emails (logs them + saves to DB) so the project runs with zero external setup. To send real emails:
 
 1. Open `notification-service/src/main/resources/application.yml`
 2. Set `notification.email.mode` to `real`
-3. Fill in `spring.mail.username` / `spring.mail.password` with a real SMTP account (e.g. a Gmail address + [App Password](https://support.google.com/accounts/answer/185833))
+3. Fill in `spring.mail.username` / `spring.mail.password` with a real SMTP account (e.g. a Gmail address + App Password)
 
 ## Key REST Endpoints (via API Gateway on :8080)
 
@@ -162,5 +117,4 @@ By default, `notification-service` **simulates** emails (logs them + saves to DB
 | POST | `/api/shelters` | Add a shelter |
 | PUT | `/api/shelters/{id}/assign` | Assign rescued people to a shelter |
 | POST | `/api/notifications/send` | Send a notification (used internally by Feign) |
-
 
