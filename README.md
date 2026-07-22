@@ -34,7 +34,7 @@ disaster-response-platform/
 
 - Java 17+ (JDK)
 - Maven 3.8+
-- Node.js 18+ and npm
+- React.js 18 and npm
 - PostgreSQL 14+ installed locally
 
 ## 1. Set Up PostgreSQL
