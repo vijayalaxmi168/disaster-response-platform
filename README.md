@@ -51,12 +51,7 @@ mvn clean install
 
 Open a separate terminal per service:
 
-```bash
-# 1. Eureka Server — wait for it to fully start before continuing
-cd eureka-server && mvn spring-boot:run
 
-# 2. API Gateway
-cd api-gateway && mvn spring-boot:run
 
 
 ```
@@ -66,11 +61,7 @@ You should see all 6 apps (API-GATEWAY + 5 services... eureka-server itself does
 
 ## 4. Run the Frontend
 
-```bash
-cd frontend
-npm install
-npm run dev
-```
+
 
 ## Using the App
 
