@@ -52,10 +52,6 @@ mvn clean install
 Open a separate terminal per service:
 
 
-
-
-```
-
 Confirm everything registered correctly at the Eureka dashboard: **http://localhost:8761**
 You should see all 6 apps (API-GATEWAY + 5 services... eureka-server itself doesn't register).
 
